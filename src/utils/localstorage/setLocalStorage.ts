@@ -23,3 +23,7 @@ export const saveLocalStorage = (state: TimerState) => {
         console.warn('Ошибка при сохранении в LocalStorage: ', e)
     }
 }
+
+export const resetLocalStorage = () => {
+    localStorage.removeItem('timer');
+}

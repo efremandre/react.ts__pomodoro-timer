@@ -4,7 +4,10 @@ import {
     Box,
     Center,
     Circle,
-    Container, CircularProgress, CircularProgressLabel
+    CircularProgress,
+    CircularProgressLabel,
+    Container,
+    Text
 } from '@chakra-ui/react'
 import {
     selectTimer
@@ -15,7 +18,7 @@ import {timerWithTitle} from "../utils/timer-counter/timerWithTitle.ts";
 import {saveLocalStorage} from "../utils/localstorage/setLocalStorage.ts";
 import useTimer from "../hooks/useTimer.tsx";
 import {calculateProgress} from "../utils/timer-counter/setRounder.ts";
-import ChangeTimer from "./ChangeTimer.tsx";
+import Sidebar from "./Sidebar.tsx";
 
 function App() {
     const stateTimer = useSelector((state: RootState) => selectTimer(state))
@@ -23,8 +26,11 @@ function App() {
         isRunning,
         propMinutesWork,
         propMinutesBreak,
+        propMinutesBigBreak,
         minutes,
         seconds,
+        roundCounter,
+        cicleCounter,
         mode
     } = stateTimer
 
@@ -33,8 +39,8 @@ function App() {
     useTimer()
 
     const progress = useMemo(() => {
-        return calculateProgress(mode, propMinutesBreak, propMinutesWork, minutes, seconds)
-    }, [isRunning, mode, propMinutesBreak, propMinutesWork, minutes, seconds])
+        return calculateProgress(mode, propMinutesBreak, propMinutesWork, propMinutesBigBreak, minutes, seconds)
+    }, [isRunning, mode, propMinutesWork, propMinutesBreak, propMinutesBigBreak, minutes, seconds])
 
     useEffect(() => {
         timerWithTitle(minutes, seconds, mode, progress)
@@ -48,8 +54,9 @@ function App() {
 
     return (
         <>
-            <Container maxW='500px'>
-                <ChangeTimer />
+            <Container maxW='600px'>
+                <Center mt='24px'><Text fontSize='1rem' color='red.100'>Помидорковый цикл: {cicleCounter}, Помидор: {roundCounter}</Text></Center>
+                <Sidebar />
                 <Center>
                     <Box>
                         <Center my='50px'>

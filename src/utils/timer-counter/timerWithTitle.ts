@@ -1,5 +1,8 @@
 
-export const timerWithTitle = (minutes: number, seconds: number, mode: string, progress: number): void => {
+export const timerWithTitle = (minutes: number,
+                               seconds: number,
+                               mode: string,
+                               progress: number): void => {
     document.title = `${minutes}:${String(seconds).padStart(2, '0')} - Pomodoro Timer`;
 
     const favicon = document.getElementById('favicon') as HTMLLinkElement;

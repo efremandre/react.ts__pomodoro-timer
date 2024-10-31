@@ -1,66 +1,105 @@
-import {Box, Button, Center, Input} from "@chakra-ui/react";
-import {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
 import {
+    Box,
+    Flex,
+    NumberDecrementStepper,
+    NumberIncrementStepper,
+    NumberInput,
+    NumberInputField, NumberInputStepper,
+    Text
+} from '@chakra-ui/react';
+import {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+    changeBigBreakTime,
     changeBreakTime,
     changeWorkTime,
     selectTimer
-} from "../features/timer-slice/timerSlice.ts";
-import {RootState} from "../store/store.ts";
+} from '../features/timer-slice/timerSlice.ts';
+import {RootState} from '../store/store.ts';
 
 const ChangeTimer = () => {
-    const { propMinutesWork, propMinutesBreak } = useSelector((state: RootState) => selectTimer(state))
+    const {
+        propMinutesWork,
+        propMinutesBreak,
+        propMinutesBigBreak
+    } = useSelector((state: RootState) => selectTimer(state))
     const dispatch = useDispatch()
-    const [inputValues, setInputValues] = useState({work: '', break: ''})
-    const changeInput = (ev: React.ChangeEvent<HTMLInputElement>) => {
-        const target = ev.currentTarget
-        const values = {...inputValues}
-
-        if (target.id === 'work' && target.value !== '') {
-            values.work = target.value
-            setInputValues({...values})
-        }
-
-        if (target.id === 'break' && target.value !== '') {
-            values.break = target.value
-            setInputValues({...values})
-        }
+    const [inputValues, setInputValues] = useState({
+        work: propMinutesWork,
+        break: propMinutesBreak,
+        bigbreak: propMinutesBigBreak
+    })
+    const changeInput = (valueNumber: number, inputId: 'work' | 'break' | 'bigbreak') => {
+        setInputValues((prevValues) => ({
+            ...prevValues,
+            [inputId]: valueNumber
+        }))
     }
 
     const handleChangeWorkTime = () => {
-        const workTime = Number(inputValues.work);
+        const workTime = (inputValues.work > 0) ? inputValues.work  : 25
         dispatch(changeWorkTime({work: workTime}))
-        inputValues.work = ''
     }
 
     const handleChangeBreakTimer = () => {
-        const breakTime = Number(inputValues.break);
+        const breakTime = (inputValues.break > 0) ? inputValues.break : 5
         dispatch(changeBreakTime({break: breakTime}))
-        inputValues.break = ''
+    }
+
+    const handleChangeBigBreakTimer = () => {
+        const breakTime = (inputValues.bigbreak > 0) ? inputValues.bigbreak : 15
+        dispatch(changeBigBreakTime({bigbreak: breakTime}))
     }
 
 
     return (
         <Box>
-            <Center>
-                <Input id="work"
-                       type="number"
-                       value={inputValues.work}
-                       placeholder={`${propMinutesWork}`}
-                       width="60px"
-                       onChange={changeInput}
-                       color='red.100'/>
+            <Flex flexDirection='column' gap={6}>
+                <Box>
+                    <Text mb='8px' fontSize='12px' color='red.100'>Продолжительность
+                        помидора</Text>
+                    <NumberInput min={0}
+                                 defaultValue={propMinutesWork}
+                                 onChange={(_, valueNumber) => changeInput(valueNumber, 'work')}
+                                 onBlur={handleChangeWorkTime}>
+                        <NumberInputField/>
+                        <NumberInputStepper>
+                            <NumberIncrementStepper/>
+                            <NumberDecrementStepper/>
+                        </NumberInputStepper>
+                    </NumberInput>
+                </Box>
 
-                <Input id="break"
-                       type="number"
-                       value={inputValues.break}
-                       placeholder={`${propMinutesBreak}`}
-                       width="60px"
-                       onChange={changeInput}
-                       color='red.100'/>
-                <Button onClick={handleChangeWorkTime}>Ок</Button>
-                <Button onClick={handleChangeBreakTimer}>Ок</Button>
-            </Center>
+                <Box>
+                    <Text mb='8px' fontSize='12px' color='red.100'>Продолжительность
+                        короткого перерыва</Text>
+                    <NumberInput min={0}
+                                 defaultValue={propMinutesBreak}
+                                 onChange={(_, valueNumber) => changeInput(valueNumber, 'break')}
+                                 onBlur={handleChangeBreakTimer}>
+                        <NumberInputField/>
+                        <NumberInputStepper>
+                            <NumberIncrementStepper/>
+                            <NumberDecrementStepper/>
+                        </NumberInputStepper>
+                    </NumberInput>
+                </Box>
+
+                <Box>
+                    <Text mb='8px' fontSize='12px' color='red.100'>Продолжительность
+                        длинного перерыва</Text>
+                    <NumberInput min={0}
+                                 defaultValue={propMinutesBigBreak}
+                                 onChange={(_, valueNumber) => changeInput(valueNumber, 'bigbreak')}
+                                 onBlur={handleChangeBigBreakTimer}>
+                        <NumberInputField/>
+                        <NumberInputStepper>
+                            <NumberIncrementStepper/>
+                            <NumberDecrementStepper/>
+                        </NumberInputStepper>
+                    </NumberInput>
+                </Box>
+            </Flex>
         </Box>
     );
 };

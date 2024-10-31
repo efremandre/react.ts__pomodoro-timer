@@ -1,4 +1,4 @@
-import {Button, Circle, Flex} from "@chakra-ui/react";
+import      {Button, Circle, Flex} from "@chakra-ui/react";
 import {
     startStopTimer,
     switchMode
